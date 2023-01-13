@@ -8,10 +8,12 @@ queSel('#btnThemNV').addEventListener('click', () => {
     let account = String(queSel('#tknv').value); // input tài khoản
     let checkAcc = validateAcc(account); // kiểm tra input tài khoản
 
-    let fullName = String(queSel('#name').value); // input họ tên
+    let fullName = queSel('#name').value; // input họ tên
     let checkName = validateName(fullName); // kiêm tra input họ tên
 
-    let email = queSel('#email').value;
+    let email = queSel('#email').value; // input địa chỉ email
+    let checkEmail = validateEmail(email); // kiểm tra input địa chỉ email
+
     let password = queSel('#password').value;
     let date = queSel('#datepicker').value;
     let baseSalary = +queSel('#luongCB').value;
@@ -29,10 +31,10 @@ queSel('#btnThemNV').addEventListener('click', () => {
     let tdPosition = '<td>' + staff.position + '</td>';
     let tdTotalSalary = '<td>' + staff.totalSalary() + '</td>';
     let tdCategory = '<td>' + staff.category() + '</td>';
-    let tdEditDelete = '<td>' + '<button type="button" class="btn btn-info mr-1">Edit</button>' + '<button type="button" class="btn btn-danger ml-1">Delete</button>' + '</td>';
+    let tdDelete = '<td>' + '<button type="button" class="btn btn-danger ml-1" id="btnDelete">Delete</button>' + '</td>';
 
     // tạo biến chứa 1 hàng dữ liệu tương ứng mà user đã nhập
-    let tr = '<tr>' + tdAccount + tdFullName + tdEmail + tdDate + tdPosition + tdTotalSalary + tdCategory + tdEditDelete + '</tr>';
+    let tr = '<tr>' + tdAccount + tdFullName + tdEmail + tdDate + tdPosition + tdTotalSalary + tdCategory + tdDelete + '</tr>';
 
     // output: hiển thị dữ liệu đã nhập dưới dạng table danh sách nhân viên
     let tbody = getID('tableDanhSach');
@@ -44,11 +46,14 @@ queSel('#btnThemNV').addEventListener('click', () => {
     else if (!checkAcc) {
         queSel('#tbTKNV').innerHTML = 'Tài khoản phải được nhập bằng số.';
     }
-    else if (account.length < 4 || account.length > 6){
+    else if (account.length < 4 || account.length > 6) {
         queSel('#tbTKNV').innerHTML = 'Tài khoản phải nhập từ 4 đến 6 ký số.';
     }
-    else if (!checkName){
+    else if (!checkName) {
         queSel('#tbTen').innerHTML = 'Tên nhân viên phải là chữ.';
+    }
+    else if (!checkEmail) {
+        queSel('#tbEmail').innerHTML = 'Email phải đúng định dạng.';
     }
     else {
         tbody.innerHTML += tr;
@@ -69,6 +74,7 @@ validateAcc = (acc) => {
     }
 }
 
+
 // Tạo hàm kiểm tra họ tên
 validateName = (name) => {
     let letters = new RegExp("^[A-Za-z]+$");
@@ -76,6 +82,21 @@ validateName = (name) => {
     getID('tbTen').style.display = 'block';
 
     if (letters.test(name)) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+
+// Tạo hàm kiểm tra email
+validateEmail = (email) => {
+    let mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+    getID('tbEmail').style.display = 'block';
+
+    if (email.match(mailFormat)) {
         return true;
     }
     else {
