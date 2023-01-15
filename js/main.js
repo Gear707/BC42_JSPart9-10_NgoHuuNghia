@@ -5,7 +5,7 @@ getID = (ID) => document.getElementById(ID);
 // Thêm mới nhân viên
 queSel('#btnThemNV').addEventListener('click', () => {
     // input: dữ liệu đầu vào của nhân viên
-    let account = String(queSel('#tknv').value); // input tài khoản
+    let account = queSel('#tknv').value; // input tài khoản
     let checkAcc = validateAcc(account); // kiểm tra input tài khoản
 
     let fullName = queSel('#name').value; // input họ tên
@@ -46,7 +46,7 @@ queSel('#btnThemNV').addEventListener('click', () => {
     else if (!checkAcc) {
         queSel('#tbTKNV').innerHTML = 'Tài khoản phải được nhập bằng số.';
     }
-    else if (account.length < 4 || account.length > 6) {
+    else if (String(account).length < 4 || String(account).length > 6) {
         queSel('#tbTKNV').innerHTML = 'Tài khoản phải nhập từ 4 đến 6 ký số.';
     }
     else if (!checkName) {
