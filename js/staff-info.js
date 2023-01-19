@@ -1,13 +1,6 @@
 // Tạo lớp đối tượng nhân viên
 function StaffInfo(
-    account,
-    fullName,
-    email,
-    password,
-    date,
-    baseSalary,
-    position,
-    hours
+    account, fullName, email, password, date, baseSalary, position, hours
 ) {
     // property
     this.account = account;
@@ -24,11 +17,11 @@ function StaffInfo(
 StaffInfo.prototype.totalSalary = function () {
     // tính tổng lương trong tháng dựa theo chức vụ
     switch (this.position) {
-        case 'A':
+        case 'Sếp':
             return this.baseSalary * 3;
-        case 'B':
+        case 'Trưởng phòng':
             return this.baseSalary * 2;
-        case 'C':
+        case 'Nhân viên':
             return this.baseSalary;
         default:
             break;

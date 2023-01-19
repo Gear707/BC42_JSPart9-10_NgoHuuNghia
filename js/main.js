@@ -1,36 +1,21 @@
 // Tạo mảng chứa danh sách nhân viên
-const staffList = [];
+let staffList = [];
+
 
 // Thêm mới nhân viên
 getEle('#btnThemNV').addEventListener('click', () => {
-    // input: dữ liệu đầu vào của nhân viên
-    let account = String(getEle('#tknv').value); // input tài khoản
-    let checkAcc = validateAcc(account); // kiểm tra input tài khoản
-    let checkLength = validateLength(account, 4, 6); // kiểm tra độ dài input tài khoản
-
-    let fullName = getEle('#name').value; // input họ tên
-    let checkName = validateName(fullName); // kiêm tra input họ tên
-
-    let email = getEle('#email').value; // input địa chỉ email
-    let checkEmail = validateEmail(email); // kiểm tra input địa chỉ email
-
+    let account = getEle('#tknv').value; 
+    let fullName = getEle('#name').value;
+    let email = getEle('#email').value;
     let password = getEle('#password').value;
     let date = getEle('#datepicker').value;
     let baseSalary = +getEle('#luongCB').value;
     let position = getEle('#chucvu').value;
     let hours = +getEle('#gioLam').value;
 
-    // progress
     // tạo object nhân viên
     const staff = new StaffInfo(
-        account,
-        fullName,
-        email,
-        password,
-        date,
-        baseSalary,
-        position,
-        hours
+        account, fullName, email, password, date, baseSalary, position, hours
     );
 
     // thêm object nhân viên vào mảng staffList
@@ -38,6 +23,9 @@ getEle('#btnThemNV').addEventListener('click', () => {
 
     // gọi hàm renderTable để hiển thị danh sách nhân viên
     renderTable(staffList);
+
+    // gọi hàm reserForm để xóa hết các dữ liệu đã nhập
+    resetForm();
 
     // trước khi in ra danh sách nhân viên phải kiểm tra tất cả các field xem dữ liệu đã nhập có hợp lệ hay không
     // if (position === '0') {
@@ -61,13 +49,12 @@ getEle('#btnThemNV').addEventListener('click', () => {
     // }
 });
 
-// Tạo hàm hiển thị danh sách sinh viên ra table
-renderTable = (staffList) => {
-    let html = '';
-    for (let i = 0; i < staffList.length; i++) {
-        let staff = staffList[i];
-        html +=
-        `
+
+// Hàm hiển thị danh sách sinh viên ra table
+function renderTable(staffList) {
+    let html = staffList.reduce((output, staff) => {
+        return output +
+            `
         <tr>
             <td>${staff.account}</td>
             <td>${staff.fullName}</td>
@@ -76,16 +63,119 @@ renderTable = (staffList) => {
             <td>${staff.position}</td>
             <td>${staff.totalSalary()}</td>
             <td>${staff.category()}</td>
-            <td><button type="button" class="btn btn-danger btnDelete">Delete</button></td>
+            <td>
+                <button type="button" class="btn btn-info" onclick="editStaff('${staff.account}')" data-toggle="modal" data-target="#myModal">Sửa</button>
+                <button type="button" class="btn btn-danger" onclick="deleteStaff('${staff.account}')">Xóa</button>
+            </td>
         </tr>
         `;
-    }
+    }, "");
 
     getEle('#tableDanhSach').innerHTML = html;
 }
 
 
-// Tạo hàm kiểm tra tài khoản
+// Hàm reset giá trị các field
+function resetForm() {
+    getEle('#tknv').value = '';
+    getEle('#name').value = '';
+    getEle('#email').value = '';
+    getEle('#password').value = '';
+    getEle('#datepicker').value = '';
+    getEle('#luongCB').value = '';
+    getEle('#chucvu').value = '0';
+    getEle('#gioLam').value = '';
+}
+
+
+// Hàm tìm kiếm nhân viên dựa theo xếp loại
+getEle('#btnTimNV').addEventListener('click', () => {
+    let search = getEle("#searchName").value;
+
+    // lọc ra các staff có category khớp với giá trị search
+    let newStaffList = staffList.filter((staff) => {
+        let category = staff.category().toLowerCase();
+        search = search.toLowerCase();
+        return category.indexOf(search) !== -1;
+    });
+
+    // hiển thị danh sách search ra giao diện
+    renderTable(newStaffList);
+});
+
+
+// Hàm xóa nhân viên dựa theo account
+function deleteStaff(acc) {
+    // lọc ra mảng staffList chỉ chứa account khác với account của nhân viên muốn xóa
+    staffList = staffList.filter((staff) => staff.account !== acc)
+
+    // cập nhật giao diện
+    renderTable(staffList);
+}
+
+
+// Hàm tìm staff theo account để fill thông tin lên form
+function editStaff(acc){
+    // trả về đúng mảng chứa staff đang chọn
+    let selectedStaff = staffList.find((staff) => staff.account === acc)
+
+    // lấy thông tin của staff tìm được để fill lên form
+    getEle('#tknv').value = selectedStaff.account;
+    getEle('#name').value = selectedStaff.fullName;
+    getEle('#email').value = selectedStaff.email;
+    getEle('#password').value = selectedStaff.password;
+    getEle('#datepicker').value = selectedStaff.date;
+    getEle('#luongCB').value = selectedStaff.baseSalary;
+    getEle('#chucvu').value = selectedStaff.position;
+    getEle('#gioLam').value = selectedStaff.hours;
+
+    // disable trường account & button thêm nhân viên
+    getEle('#btnThemNV').disabled = true;
+    getEle('#tknv').disabled = true;
+}
+
+
+// Hàm cập nhật thông tin nhân viên
+getEle('#btnCapNhat').addEventListener('click', () => {
+    let account = getEle('#tknv').value; 
+    let fullName = getEle('#name').value;
+    let email = getEle('#email').value;
+    let password = getEle('#password').value;
+    let date = getEle('#datepicker').value;
+    let baseSalary = +getEle('#luongCB').value;
+    let position = getEle('#chucvu').value;
+    let hours = +getEle('#gioLam').value;
+
+    // tạo object nhân viên
+    const staff = new StaffInfo(
+        account, fullName, email, password, date, baseSalary, position, hours
+    );
+
+    // cập nhật thông tin mới của nhân viên
+    let index = staffList.findIndex((staff) => staff.account === account)
+    staffList[index] = staff;
+
+    // cập nhật giao diện
+    renderTable(staffList);
+
+    // reset các trường dữ liệu
+    resetForm();
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Hàm kiểm tra tài khoản
 function validateAcc(acc) {
     let numbers = /^[0-9]+$/;
 
@@ -102,7 +192,7 @@ function validateAcc(acc) {
 }
 
 
-// Tạo hàm kiểm tra họ tên
+// Hàm kiểm tra họ tên
 function validateName(name) {
     let letters = new RegExp("^[A-Za-z]+$");
 
@@ -119,7 +209,7 @@ function validateName(name) {
 }
 
 
-// Tạo hàm kiểm tra email
+// Hàm kiểm tra email
 function validateEmail(email) {
     let mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
@@ -135,12 +225,13 @@ function validateEmail(email) {
     }
 }
 
-// Tạo hàm kiểm tra độ dài chuỗi
-function validateLength(input, min, max){
+
+// Hàm kiểm tra độ dài chuỗi
+function validateLength(input, min, max) {
     if (input.length >= min && input.length <= max) {
         getEle('#tbTKNV').innerHTML = '';
         return true;
-    } 
+    }
     else {
         getEle('#tbTKNV').innerHTML = 'Tài khoản phải nhập từ ' + min + ' đến ' + max + ' ký số.';
         return false;
@@ -151,5 +242,6 @@ function validateLength(input, min, max){
 function getEle(selector) {
     return document.querySelector(selector);
 }
+
 
 // console.log(staffList);
