@@ -176,7 +176,9 @@ getEle('#btnCapNhat').addEventListener('click', () => {
 
 
 // Hàm kiểm tra tài khoản
-function validateAcc(acc) {
+function validateAcc() {
+    let acc = getEle('#tknv').value;
+
     let numbers = /^[0-9]+$/;
 
     getEle('#tbTKNV').style.display = 'block';
@@ -193,7 +195,9 @@ function validateAcc(acc) {
 
 
 // Hàm kiểm tra họ tên
-function validateName(name) {
+function validateName() {
+    let name = getEle('#name').value;
+
     let letters = new RegExp("^[A-Za-z]+$");
 
     getEle('#tbTen').style.display = 'block';
@@ -210,7 +214,9 @@ function validateName(name) {
 
 
 // Hàm kiểm tra email
-function validateEmail(email) {
+function validateEmail() {
+    let email = getEle('#email').value;
+
     let mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
     getEle('#tbEmail').style.display = 'block';
@@ -227,7 +233,11 @@ function validateEmail(email) {
 
 
 // Hàm kiểm tra độ dài chuỗi
-function validateLength(input, min, max) {
+function validateLength() {
+    let input = getEle('#tknv').value;
+    const min = 4;
+    const max = 6;
+
     if (input.length >= min && input.length <= max) {
         getEle('#tbTKNV').innerHTML = '';
         return true;
