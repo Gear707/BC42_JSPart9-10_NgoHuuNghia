@@ -4,7 +4,7 @@ let staffList = [];
 
 // Thêm mới nhân viên
 getEle('#btnThemNV').addEventListener('click', () => {
-    let account = getEle('#tknv').value; 
+    let account = getEle('#tknv').value;
     let fullName = getEle('#name').value;
     let email = getEle('#email').value;
     let password = getEle('#password').value;
@@ -18,35 +18,44 @@ getEle('#btnThemNV').addEventListener('click', () => {
         account, fullName, email, password, date, baseSalary, position, hours
     );
 
-    // thêm object nhân viên vào mảng staffList
-    staffList.push(staff);
-
-    // gọi hàm renderTable để hiển thị danh sách nhân viên
-    renderTable(staffList);
-
-    // gọi hàm reserForm để xóa hết các dữ liệu đã nhập
-    resetForm();
-
     // trước khi in ra danh sách nhân viên phải kiểm tra tất cả các field xem dữ liệu đã nhập có hợp lệ hay không
-    // if (position === '0') {
-    //     alert('Vui lòng chọn chức vụ.');
-    // }
-    // else if (!checkAcc) {
-    //     alert('Tài khoản phải được nhập bằng số.');
-    // }
-    // else if (!checkLength) {
-    //     alert('Tài khoản phải nhập từ 4 đến 6 ký số.');
-    // }
-    // else if (!checkName) {
-    //     alert('Tên nhân viên phải là chữ.');
-    // }
-    // else if (!checkEmail) {
-    //     alert('Email phải đúng định dạng.');
-    // }
-    // else {
-    //     // gọi hàm renderTable để hiển thị danh sách nhân viên
-    //     renderTable(staffList);
-    // }
+    let checkAcc = validateAcc();
+    let checkLength = validateLength();
+    let checkName = validateName();
+    let checkEmail = validateEmail();
+    let checkDate = validateDate();
+    let checkPosition = validatePosition();
+
+
+    if (!checkAcc) {
+        alert('Tài khoản phải được nhập bằng số.');
+    }
+    else if (!checkLength) {
+        alert('Tài khoản phải nhập từ 4 đến 6 ký số.');
+    }
+    else if (!checkName) {
+        alert('Tên nhân viên phải là chữ.');
+    }
+    else if (!checkEmail) {
+        alert('Email phải đúng định dạng.');
+    }
+    else if (!checkDate) {
+        alert('Vui lòng nhập ngày làm.');
+    }
+    else if (!checkPosition) {
+        alert('Vui lòng chọn chức vụ.');
+    }
+    else {
+        // thêm object nhân viên vào mảng staffList
+        staffList.push(staff);
+
+        // gọi hàm renderTable để hiển thị danh sách nhân viên
+        renderTable(staffList);
+
+        // gọi hàm reserForm để xóa hết các dữ liệu đã nhập
+        resetForm();
+    }
+
 });
 
 
@@ -83,7 +92,7 @@ function resetForm() {
     getEle('#password').value = '';
     getEle('#datepicker').value = '';
     getEle('#luongCB').value = '';
-    getEle('#chucvu').value = '0';
+    getEle('#chucvu').value = 'Chọn chức vụ';
     getEle('#gioLam').value = '';
 }
 
@@ -115,7 +124,7 @@ function deleteStaff(acc) {
 
 
 // Hàm tìm staff theo account để fill thông tin lên form
-function editStaff(acc){
+function editStaff(acc) {
     // trả về đúng mảng chứa staff đang chọn
     let selectedStaff = staffList.find((staff) => staff.account === acc)
 
@@ -137,7 +146,7 @@ function editStaff(acc){
 
 // Hàm cập nhật thông tin nhân viên
 getEle('#btnCapNhat').addEventListener('click', () => {
-    let account = getEle('#tknv').value; 
+    let account = getEle('#tknv').value;
     let fullName = getEle('#name').value;
     let email = getEle('#email').value;
     let password = getEle('#password').value;
@@ -161,18 +170,6 @@ getEle('#btnCapNhat').addEventListener('click', () => {
     // reset các trường dữ liệu
     resetForm();
 })
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // Hàm kiểm tra tài khoản
@@ -234,7 +231,7 @@ function validateEmail() {
 
 // Hàm kiểm tra độ dài chuỗi
 function validateLength() {
-    let input = getEle('#tknv').value;
+    let input = String(getEle('#tknv').value);
     const min = 4;
     const max = 6;
 
@@ -249,9 +246,39 @@ function validateLength() {
 }
 
 
-function getEle(selector) {
-    return document.querySelector(selector);
+// Hàm kiểm tra ngày làm
+function validateDate() {
+    let date = getEle('#datepicker').value;
+
+    getEle('#tbNgay').style.display = 'block';
+
+    if (date === '') {
+        getEle('#tbNgay').innerHTML = 'Ngày làm không được để trống';
+        return false;
+    }
+    else {
+        getEle('#tbNgay').innerHTML = '';
+        return true;
+    }
 }
 
 
-// console.log(staffList);
+// Hàm kiểm tra chức vụ
+function validatePosition() {
+    let position = getEle('#chucvu').value;
+
+    getEle('#tbChucVu').style.display = 'block';
+
+    if (position === 'Chọn chức vụ') {
+        getEle('#tbChucVu').innerHTML = 'Vui lòng chọn chức vụ.';
+        return false;
+    }
+    else {
+        getEle('#tbChucVu').innerHTML = '';
+        return true;
+    }
+}
+
+function getEle(selector) {
+    return document.querySelector(selector);
+}
