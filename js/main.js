@@ -13,49 +13,55 @@ getEle('#btnThemNV').addEventListener('click', () => {
     let position = getEle('#chucvu').value;
     let hours = +getEle('#gioLam').value;
 
+
+    // kiểm tra tất cả các field xem dữ liệu đã nhập có hợp lệ hay không
+    let checkAcc = validateAcc();
+    let checkName = validateName();
+    let checkEmail = validateEmail();
+    let checkPassword = validatePassword();
+    let checkDate = validateDate();
+    let checkSalary = validateSalary();
+    let checkPosition = validatePosition();
+    let checkHours = validateHours();
+
+    if (!checkAcc) {
+        return;
+    }
+    if (!checkName) {
+        return;
+    }
+    if (!checkEmail) {
+        return;
+    }
+    if (!checkPassword) {
+        return;
+    }
+    if (!checkDate) {
+        return;
+    }
+    if (!checkSalary) {
+        return;
+    }
+    if (!checkPosition) {
+        return;
+    }
+    if (!checkHours) {
+        return;
+    }
+
     // tạo object nhân viên
     const staff = new StaffInfo(
         account, fullName, email, password, date, baseSalary, position, hours
     );
 
-    // trước khi in ra danh sách nhân viên phải kiểm tra tất cả các field xem dữ liệu đã nhập có hợp lệ hay không
-    let checkAcc = validateAcc();
-    let checkLength = validateLength();
-    let checkName = validateName();
-    let checkEmail = validateEmail();
-    let checkDate = validateDate();
-    let checkPosition = validatePosition();
+    // thêm object nhân viên vào mảng staffList
+    staffList.push(staff);
 
+    // gọi hàm renderTable để hiển thị danh sách nhân viên
+    renderTable(staffList);
 
-    if (!checkAcc) {
-        alert('Tài khoản phải được nhập bằng số.');
-    }
-    else if (!checkLength) {
-        alert('Tài khoản phải nhập từ 4 đến 6 ký số.');
-    }
-    else if (!checkName) {
-        alert('Tên nhân viên phải là chữ.');
-    }
-    else if (!checkEmail) {
-        alert('Email phải đúng định dạng.');
-    }
-    else if (!checkDate) {
-        alert('Vui lòng nhập ngày làm.');
-    }
-    else if (!checkPosition) {
-        alert('Vui lòng chọn chức vụ.');
-    }
-    else {
-        // thêm object nhân viên vào mảng staffList
-        staffList.push(staff);
-
-        // gọi hàm renderTable để hiển thị danh sách nhân viên
-        renderTable(staffList);
-
-        // gọi hàm reserForm để xóa hết các dữ liệu đã nhập
-        resetForm();
-    }
-
+    // gọi hàm reserForm để xóa hết các dữ liệu đã nhập
+    resetForm();
 });
 
 
@@ -70,7 +76,7 @@ function renderTable(staffList) {
             <td>${staff.email}</td>
             <td>${staff.date}</td>
             <td>${staff.position}</td>
-            <td>${staff.totalSalary()}</td>
+            <td>${staff.totalSalary().toLocaleString()}</td>
             <td>${staff.category()}</td>
             <td>
                 <button type="button" class="btn btn-info" onclick="editStaff('${staff.account}')" data-toggle="modal" data-target="#myModal">Sửa</button>
@@ -94,6 +100,10 @@ function resetForm() {
     getEle('#luongCB').value = '';
     getEle('#chucvu').value = 'Chọn chức vụ';
     getEle('#gioLam').value = '';
+
+    // enable trường account & button thêm nhân viên
+    getEle('#btnThemNV').disabled = false;
+    getEle('#tknv').disabled = false;
 }
 
 
@@ -155,6 +165,41 @@ getEle('#btnCapNhat').addEventListener('click', () => {
     let position = getEle('#chucvu').value;
     let hours = +getEle('#gioLam').value;
 
+    // kiểm tra tất cả các field xem dữ liệu đã nhập có hợp lệ hay không
+    let checkAcc = validateAcc();
+    let checkName = validateName();
+    let checkEmail = validateEmail();
+    let checkPassword = validatePassword();
+    let checkDate = validateDate();
+    let checkSalary = validateSalary();
+    let checkPosition = validatePosition();
+    let checkHours = validateHours();
+
+    if (!checkAcc) {
+        return;
+    }
+    if (!checkName) {
+        return;
+    }
+    if (!checkEmail) {
+        return;
+    }
+    if (!checkPassword) {
+        return;
+    }
+    if (!checkDate) {
+        return;
+    }
+    if (!checkSalary) {
+        return;
+    }
+    if (!checkPosition) {
+        return;
+    }
+    if (!checkHours) {
+        return;
+    }
+
     // tạo object nhân viên
     const staff = new StaffInfo(
         account, fullName, email, password, date, baseSalary, position, hours
@@ -175,8 +220,7 @@ getEle('#btnCapNhat').addEventListener('click', () => {
 // Hàm kiểm tra tài khoản
 function validateAcc() {
     let acc = getEle('#tknv').value;
-
-    let numbers = /^[0-9]+$/;
+    let numbers = /^[0-9]{4,6}$/;
 
     getEle('#tbTKNV').style.display = 'block';
 
@@ -185,7 +229,7 @@ function validateAcc() {
         return true;
     }
     else {
-        getEle('#tbTKNV').innerHTML = 'Tài khoản phải được nhập bằng số.';
+        getEle('#tbTKNV').innerHTML = 'Tài khoản phải có từ 4 ~ 6 ký số.';
         return false;
     }
 }
@@ -194,7 +238,6 @@ function validateAcc() {
 // Hàm kiểm tra họ tên
 function validateName() {
     let name = getEle('#name').value;
-
     let letters = new RegExp("^[A-Za-z]+$");
 
     getEle('#tbTen').style.display = 'block';
@@ -213,7 +256,6 @@ function validateName() {
 // Hàm kiểm tra email
 function validateEmail() {
     let email = getEle('#email').value;
-
     let mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
     getEle('#tbEmail').style.display = 'block';
@@ -229,18 +271,19 @@ function validateEmail() {
 }
 
 
-// Hàm kiểm tra độ dài chuỗi
-function validateLength() {
-    let input = String(getEle('#tknv').value);
-    const min = 4;
-    const max = 6;
+// Hàm kiểm tra mật khẩu
+function validatePassword() {
+    let password = getEle('#password').value;
+    let passFormat = /^([A-Z]){1}([\w_\.!@#$%^&*()]+){6,10}$/;
 
-    if (input.length >= min && input.length <= max) {
-        getEle('#tbTKNV').innerHTML = '';
+    getEle('#tbMatKhau').style.display = 'block';
+
+    if (password.match(passFormat)) {
+        getEle('#tbMatKhau').innerHTML = '';
         return true;
     }
     else {
-        getEle('#tbTKNV').innerHTML = 'Tài khoản phải nhập từ ' + min + ' đến ' + max + ' ký số.';
+        getEle('#tbMatKhau').innerHTML = 'Mật khẩu từ 6 ~ 10 ký tự (chứa ít nhất 1 ký tự số, 1 ký tự in hoa và 1 ký tự đặc biệt)';
         return false;
     }
 }
@@ -252,12 +295,29 @@ function validateDate() {
 
     getEle('#tbNgay').style.display = 'block';
 
-    if (date === '') {
+    if (date === '' || date === null) {
         getEle('#tbNgay').innerHTML = 'Ngày làm không được để trống';
         return false;
     }
     else {
         getEle('#tbNgay').innerHTML = '';
+        return true;
+    }
+}
+
+
+// Hàm kiểm tra lương cơ bản
+function validateSalary() {
+    let baseSalary = +getEle('#luongCB').value;
+
+    getEle('#tbLuongCB').style.display = 'block';
+
+    if (baseSalary < 1e+6 || baseSalary > 20e+6) {
+        getEle('#tbLuongCB').innerHTML = 'Lương cơ bản phải nằm trong phạm vi 1,000,000 ~ 20,000,000';
+        return false;
+    }
+    else {
+        getEle('#tbLuongCB').innerHTML = '';
         return true;
     }
 }
@@ -275,6 +335,23 @@ function validatePosition() {
     }
     else {
         getEle('#tbChucVu').innerHTML = '';
+        return true;
+    }
+}
+
+
+// Hàm kiểm tra số giờ làm trong tháng
+function validateHours() {
+    let hours = +getEle('#gioLam').value;
+
+    getEle('#tbGiolam').style.display = 'block';
+
+    if (hours < 80 || hours > 200) {
+        getEle('#tbGiolam').innerHTML = 'Số giờ làm phải nằm trong khoảng 80 ~ 200 giờ';
+        return false;
+    }
+    else {
+        getEle('#tbGiolam').innerHTML = '';
         return true;
     }
 }
