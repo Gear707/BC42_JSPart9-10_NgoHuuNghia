@@ -13,7 +13,6 @@ getEle('#btnThemNV').addEventListener('click', () => {
     let position = getEle('#chucvu').value;
     let hours = +getEle('#gioLam').value;
 
-
     // kiểm tra tất cả các field xem dữ liệu đã nhập có hợp lệ hay không
     let checkAcc = validateAcc();
     let checkName = validateName();
