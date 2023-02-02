@@ -195,7 +195,11 @@ function validateData() {
 
     // kiểm tra họ tên
     let name = getEle('#name').value;
-    const letters = new RegExp("^[A-Za-z]+$");
+    // const letters = new RegExp("^[A-Za-z]+$");
+    // tạo biểu thức chính quy cho phép nhập tiếng việt
+    const letters = new RegExp(
+        "^[aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ]+$"
+        );
 
     getEle('#tbTen').style.display = 'block';
 
@@ -208,7 +212,7 @@ function validateData() {
     }
     else {
         isValid = false;
-        getEle('#tbTen').innerHTML = 'Tên nhân viên phải là chữ';
+        getEle('#tbTen').innerHTML = 'Tên nhân viên không hợp lệ';
     }
 
     // kiểm tra email
