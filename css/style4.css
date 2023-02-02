@@ -49,6 +49,7 @@ i, span {
     display: inline-block;
 }
 
+/* Căn lề giữa cho các row trong table */
 .table td, .table th{
     vertical-align: middle;
 }
