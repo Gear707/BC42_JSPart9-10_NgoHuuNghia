@@ -5,8 +5,7 @@ $( function() {
         buttonImage: "img/calendar-icon.png",
         buttonImageOnly: true,
         buttonText: "Select date",
-        dateFormat: "mm/dd/yy"
-
+        dateFormat: "dd/mm/yy"
     });
 } );
 
@@ -17,8 +16,6 @@ $( document ).ready(function() {
     var month = d.getMonth()+1;
     var day = d.getDate();
 
-    var output = ((''+month).length<2 ? '0' : '') + month  + '/' +
-    ((''+day).length<2 ? '0' : '') + day + '/' +
-    d.getFullYear();
+    var output = ((''+day).length<2 ? '0' : '') + day + '/' + ((''+month).length<2 ? '0' : '') + month + '/' + d.getFullYear();
     $('#datepicker').val(output);   
 });

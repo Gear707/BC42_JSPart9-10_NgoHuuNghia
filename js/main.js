@@ -1,5 +1,9 @@
 // Tạo mảng chứa danh sách nhân viên
-let staffList = [];
+let staffList = getStaffList();
+console.log('staffList', staffList);
+
+// Hiển thị danh sách staff ra UI khi mở site
+renderTable(staffList);
 
 
 // Thêm mới nhân viên
@@ -13,38 +17,9 @@ getEle('#btnThemNV').addEventListener('click', () => {
     let position = getEle('#chucvu').value;
     let hours = +getEle('#gioLam').value;
 
-    // kiểm tra tất cả các field xem dữ liệu đã nhập có hợp lệ hay không
-    let checkAcc = validateAcc();
-    let checkName = validateName();
-    let checkEmail = validateEmail();
-    let checkPassword = validatePassword();
-    let checkDate = validateDate();
-    let checkSalary = validateSalary();
-    let checkPosition = validatePosition();
-    let checkHours = validateHours();
-
-    if (!checkAcc) {
-        return;
-    }
-    if (!checkName) {
-        return;
-    }
-    if (!checkEmail) {
-        return;
-    }
-    if (!checkPassword) {
-        return;
-    }
-    if (!checkDate) {
-        return;
-    }
-    if (!checkSalary) {
-        return;
-    }
-    if (!checkPosition) {
-        return;
-    }
-    if (!checkHours) {
+    // kiểm tra tính hợp lệ của các input
+    let isValid = validateData();
+    if (!isValid) {
         return;
     }
 
@@ -61,6 +36,9 @@ getEle('#btnThemNV').addEventListener('click', () => {
 
     // gọi hàm reserForm để xóa hết các dữ liệu đã nhập
     resetForm();
+
+    // lưu staffList xuống localStorage
+    storeStaffList();
 });
 
 
@@ -129,6 +107,9 @@ function deleteStaff(acc) {
 
     // cập nhật giao diện
     renderTable(staffList);
+
+    // lưu staffList xuống localStorage
+    storeStaffList();
 }
 
 
@@ -164,38 +145,9 @@ getEle('#btnCapNhat').addEventListener('click', () => {
     let position = getEle('#chucvu').value;
     let hours = +getEle('#gioLam').value;
 
-    // kiểm tra tất cả các field xem dữ liệu đã nhập có hợp lệ hay không
-    let checkAcc = validateAcc();
-    let checkName = validateName();
-    let checkEmail = validateEmail();
-    let checkPassword = validatePassword();
-    let checkDate = validateDate();
-    let checkSalary = validateSalary();
-    let checkPosition = validatePosition();
-    let checkHours = validateHours();
-
-    if (!checkAcc) {
-        return;
-    }
-    if (!checkName) {
-        return;
-    }
-    if (!checkEmail) {
-        return;
-    }
-    if (!checkPassword) {
-        return;
-    }
-    if (!checkDate) {
-        return;
-    }
-    if (!checkSalary) {
-        return;
-    }
-    if (!checkPosition) {
-        return;
-    }
-    if (!checkHours) {
+    // kiểm tra tính hợp lệ của các input
+    let isValid = validateData();
+    if (!isValid) {
         return;
     }
 
@@ -213,146 +165,194 @@ getEle('#btnCapNhat').addEventListener('click', () => {
 
     // reset các trường dữ liệu
     resetForm();
+
+    // lưu staffList xuống localStorage
+    storeStaffList();
 })
 
 
-// Hàm kiểm tra tài khoản
-function validateAcc() {
+// Hàm validate các dữ liệu đầu vào
+function validateData() {
+    let isValid = true;
+
+    // kiểm tra acc
     let acc = getEle('#tknv').value;
-    let numbers = /^[0-9]{4,6}$/;
+    const numbers = /^[0-9]{4,6}$/;
 
     getEle('#tbTKNV').style.display = 'block';
 
     if (acc.match(numbers)) {
         getEle('#tbTKNV').innerHTML = '';
-        return true;
+    }
+    else if (!acc.trim()) {
+        isValid = false;
+        getEle('#tbTKNV').innerHTML = 'Tài khoản không được để trống';
     }
     else {
-        getEle('#tbTKNV').innerHTML = 'Tài khoản phải có từ 4 ~ 6 ký số.';
-        return false;
+        isValid = false;
+        getEle('#tbTKNV').innerHTML = 'Tài khoản phải có từ 4 ~ 6 ký số';
     }
-}
 
-
-// Hàm kiểm tra họ tên
-function validateName() {
+    // kiểm tra họ tên
     let name = getEle('#name').value;
-    let letters = new RegExp("^[A-Za-z]+$");
+    const letters = new RegExp("^[A-Za-z]+$");
 
     getEle('#tbTen').style.display = 'block';
 
     if (letters.test(name)) {
         getEle('#tbTen').innerHTML = '';
-        return true;
+    }
+    else if (!name.trim()) {
+        isValid = false;
+        getEle('#tbTen').innerHTML = 'Tên nhân viên không được để trống';
     }
     else {
-        getEle('#tbTen').innerHTML = 'Tên nhân viên phải là chữ.';
-        return false;
+        isValid = false;
+        getEle('#tbTen').innerHTML = 'Tên nhân viên phải là chữ';
     }
-}
 
-
-// Hàm kiểm tra email
-function validateEmail() {
+    // kiểm tra email
     let email = getEle('#email').value;
-    let mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    const mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
     getEle('#tbEmail').style.display = 'block';
 
-    if (email.match(mailFormat)) {
-        getEle('#tbEmail').innerHTML = '';
-        return true;
+    if (!email.trim()) {
+        isValid = false;
+        getEle('#tbEmail').innerHTML = 'Email không được để trống';
+    }
+    else if (!email.match(mailFormat)) {
+        isValid = false;
+        getEle('#tbEmail').innerHTML = 'Email không hợp lệ';
     }
     else {
-        getEle('#tbEmail').innerHTML = 'Email phải đúng định dạng.';
-        return false;
+        getEle('#tbEmail').innerHTML = '';
     }
-}
 
-
-// Hàm kiểm tra mật khẩu
-function validatePassword() {
+    // kiểm tra password
     let password = getEle('#password').value;
-    let passFormat = /^([A-Z]){1}([\w_\.!@#$%^&*()]+){6,10}$/;
+    const passFormat = /((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{6,10})/;
 
     getEle('#tbMatKhau').style.display = 'block';
 
-    if (password.match(passFormat)) {
-        getEle('#tbMatKhau').innerHTML = '';
-        return true;
+    if (!password.trim()) {
+        isValid = false;
+        getEle('#tbMatKhau').innerHTML = 'Mật khẩu không được để trống';
+    }
+    else if (!password.match(passFormat)) {
+        isValid = false;
+        getEle('#tbMatKhau').innerHTML = 'Mật khẩu từ 6 ~ 10 ký tự (chứa ít nhất 1 ký tự số, 1 ký tự in hoa và 1 ký tự đặc biệt)';
     }
     else {
-        getEle('#tbMatKhau').innerHTML = 'Mật khẩu từ 6 ~ 10 ký tự (chứa ít nhất 1 ký tự số, 1 ký tự in hoa và 1 ký tự đặc biệt)';
-        return false;
+        getEle('#tbMatKhau').innerHTML = '';
     }
-}
 
-
-// Hàm kiểm tra ngày làm
-function validateDate() {
+    // kiểm tra ngày làm
     let date = getEle('#datepicker').value;
+    const dateFormat = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
 
     getEle('#tbNgay').style.display = 'block';
 
-    if (date === '' || date === null) {
+    if (!date.trim()) {
+        isValid = false;
         getEle('#tbNgay').innerHTML = 'Ngày làm không được để trống';
-        return false;
+    }
+    else if (!date.match(dateFormat)) {
+        isValid = false;
+        getEle('#tbNgay').innerHTML = 'Ngày làm phải theo đúng định dạng DD/MM/YYYY';
     }
     else {
         getEle('#tbNgay').innerHTML = '';
-        return true;
     }
-}
 
-
-// Hàm kiểm tra lương cơ bản
-function validateSalary() {
-    let baseSalary = +getEle('#luongCB').value;
+    // kiểm tra lương cơ bản
+    let baseSalary = getEle('#luongCB').value;
 
     getEle('#tbLuongCB').style.display = 'block';
 
-    if (baseSalary < 1e+6 || baseSalary > 20e+6) {
+    if (!baseSalary.trim()) {
+        isValid = false;
+        getEle('#tbLuongCB').innerHTML = 'Lương cơ bản không được để trống'
+    }
+    else if (Number(baseSalary) < 1e+6 || Number(baseSalary) > 20e+6) {
+        isValid = false;
         getEle('#tbLuongCB').innerHTML = 'Lương cơ bản phải nằm trong phạm vi 1,000,000 ~ 20,000,000';
-        return false;
     }
     else {
         getEle('#tbLuongCB').innerHTML = '';
-        return true;
     }
-}
 
-
-// Hàm kiểm tra chức vụ
-function validatePosition() {
+    // kiểm tra chức vụ
     let position = getEle('#chucvu').value;
 
     getEle('#tbChucVu').style.display = 'block';
 
     if (position === 'Chọn chức vụ') {
-        getEle('#tbChucVu').innerHTML = 'Vui lòng chọn chức vụ.';
-        return false;
+        isValid = false;
+        getEle('#tbChucVu').innerHTML = 'Vui lòng chọn chức vụ hợp lệ';
     }
     else {
         getEle('#tbChucVu').innerHTML = '';
-        return true;
     }
-}
 
-
-// Hàm kiểm tra số giờ làm trong tháng
-function validateHours() {
-    let hours = +getEle('#gioLam').value;
+    // kiểm tra số giờ làm trong tháng
+    let hours = getEle('#gioLam').value;
 
     getEle('#tbGiolam').style.display = 'block';
 
-    if (hours < 80 || hours > 200) {
+    if (!hours.trim()) {
+        isValid = false;
+        getEle('#tbGiolam').innerHTML = 'Số giờ làm không được để trống';
+    }
+    else if (Number(hours) < 80 || Number(hours) > 200) {
+        isValid = false;
         getEle('#tbGiolam').innerHTML = 'Số giờ làm phải nằm trong khoảng 80 ~ 200 giờ';
-        return false;
     }
     else {
         getEle('#tbGiolam').innerHTML = '';
-        return true;
     }
+
+    return isValid;
+}
+
+
+// Hàm lưu thông tin staff xuống localStorage
+function storeStaffList() {
+    // chuyển mảng staffList thành JSON
+    const json = JSON.stringify(staffList);
+
+    // lưu xuống localStorage với key là staffList
+    localStorage.setItem("staffList", json);
+}
+
+
+// Hàm lấy thông tin staff từ localStorage
+function getStaffList() {
+    // lấy data từ localStorage với key là staffList
+    const json = localStorage.getItem("staffList");
+
+    // nếu localStorage không có data thì trả về mảng rỗng
+    if (!json) {
+        return [];
+    }
+
+    // chuyển JSON thành kiểu dữ liệu array
+    const staffList = JSON.parse(json);
+    for (let i = 0; i < staffList.length; i++) {
+        const staff = staffList[i];
+        staffList[i] = new StaffInfo(
+            staff.account,
+            staff.fullName,
+            staff.email,
+            staff.password,
+            staff.date,
+            staff.baseSalary,
+            staff.position,
+            staff.hours
+        );
+    }
+
+    return staffList;
 }
 
 function getEle(selector) {
