@@ -195,24 +195,15 @@ function validateData() {
 
     // kiểm tra họ tên
     let name = getEle('#name').value;
-    // const letters = new RegExp("^[A-Za-z]+$");
-    // tạo biểu thức chính quy cho phép nhập tiếng việt
-    const letters = new RegExp(
-        "^[aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ]+$"
-        );
 
     getEle('#tbTen').style.display = 'block';
 
-    if (letters.test(name)) {
-        getEle('#tbTen').innerHTML = '';
-    }
-    else if (!name.trim()) {
+    if (name === "") {
         isValid = false;
         getEle('#tbTen').innerHTML = 'Tên nhân viên không được để trống';
     }
     else {
-        isValid = false;
-        getEle('#tbTen').innerHTML = 'Tên nhân viên không hợp lệ';
+        getEle('#tbTen').innerHTML = '';
     }
 
     // kiểm tra email
