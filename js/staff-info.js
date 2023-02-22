@@ -31,7 +31,7 @@ StaffInfo.prototype.totalSalary = function () {
 StaffInfo.prototype.category = function () {
     // xếp loại nhân viên dựa theo số giờ làm trong tháng
     let result = '';
-    
+
     if (this.hours >= 192) {
         result = 'Xuất sắc';
     }
